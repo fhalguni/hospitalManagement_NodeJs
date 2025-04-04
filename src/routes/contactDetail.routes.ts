@@ -6,4 +6,9 @@ router.post(
   "/addNewContact/:id",
   contactDetailsController.insertEmergencyContact
 );
+router.get("/getContact/:id", contactDetailsController.displayEmergencyContact);
+router.delete(
+  "/deleteContact/:id",
+  contactDetailsController.deleteContactDetail
+);
 export { router as ContactRouter };

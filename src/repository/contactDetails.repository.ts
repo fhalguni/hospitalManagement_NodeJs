@@ -1,27 +1,49 @@
 import { AppDataSourse } from "../config/database.config";
 import { ContactDetails } from "../models/contactDetails.model";
+import { Patient } from "../models/patient.model";
+import patientRepository from "./patient.repository";
 
 class ContactDetailsRepository {
   contactRepository = AppDataSourse.getRepository(ContactDetails);
-
+  patientRepository = AppDataSourse.getRepository(Patient);
   async insertEmergencyDetail(
-    patientId: number,
-    contact: Partial<ContactDetails>
+    name: string,
+    phoneNumber: string,
+    patientId: number
   ) {
-    const isPatientAvailabe = await this.contactRepository
-      .createQueryBuilder("contactDetails")
-      .where("patientId=:patientId", { patientId })
-      .getOne();
+    const newContact = await this.contactRepository
+      .createQueryBuilder()
+      .insert()
+      .into(ContactDetails)
+      .values({ name, phoneNumber, patient: { id: patientId } })
+      .execute();
+    return newContact;
+  }
 
-    console.log(isPatientAvailabe);
+  async deleteEmergencyContact(id: number, contactId: number) {
+    const contactDetails = await this.contactRepository.find({
+      where: { patient: { id: id } },
+    });
 
-    if (isPatientAvailabe) {
-      const newContact = this.contactRepository.create({
-        patient: { id: patientId },
-        ...contact,
-      });
-      return await this.contactRepository.save(newContact);
+    const isContactPresent = contactDetails.find(
+      (contact: any) => contactId === contact.id
+    );
+    console.log(isContactPresent);
+
+    console.log(contactId);
+
+    if (!isContactPresent) {
+      throw new Error("contact not found with this id");
     }
+
+    return await this.contactRepository.delete({ id: isContactPresent.id });
+  }
+
+  async displayEmergencyContact(id: number) {
+    return await this.contactRepository
+      .createQueryBuilder()
+      .where("patientId=:id", { id: id })
+      .execute();
   }
 }
 

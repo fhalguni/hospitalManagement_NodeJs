@@ -3,6 +3,7 @@ import { DataSource } from "typeorm";
 import dotenv from "dotenv";
 import { Patient } from "../models/patient.model";
 import { ContactDetails } from "../models/contactDetails.model";
+import { Appointment } from "../models/appointment.model";
 
 dotenv.config({ path: "config.env" });
 export const AppDataSourse = new DataSource({
@@ -11,7 +12,7 @@ export const AppDataSourse = new DataSource({
   host: process.env.DATABASE_HOST,
   database: process.env.DATABASE_NAME,
   synchronize: true,
-  entities: [Patient, ContactDetails],
+  entities: ["./src/models/*.ts"],
   options: {
     encrypt: false,
     trustServerCertificate: true,

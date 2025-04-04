@@ -1,0 +1,11 @@
+import express from "express";
+import doctorController from "../controllers/doctor.controller";
+import { authenticateUser } from "../middleware/auth.middleware";
+const router = express.Router();
+router.post("/createDoctor", doctorController.createDoctor);
+router.get("/getAllDoctor", doctorController.getAllDoctors);
+router.put("/confirmAppointment/:id", doctorController.confirmAppointment);
+router.put("/rejectAppointment/:id", doctorController.rejectAppointment);
+router.post("/login-doctor", doctorController.logInDoctor);
+router.get("/AllAppointments/:id", doctorController.getAllAppointments);
+export { router as DoctorRouter };
