@@ -9,25 +9,33 @@ export const configureSocket = (socketIo: Server) => {
 
     socket.on(
       "slotBook",
-      async (data: { doctorId: string; day: Date; timeSlot: string }) => {
+      async (data: { doctorId: number; day: Date; timeSlot: string }) => {
         try {
-          socket.join(data.doctorId);
+          socket.join(data.doctorId + "");
+          console.log("User joined to docter room " + data.doctorId);
+
+          console.log(data);
 
           console.log(`patient has booked appointment `);
           const patients = await appointmentService.getPatientAppointmentBySlot(
             data.day,
             data.timeSlot,
-            +data.doctorId
+            data.doctorId
           );
 
           if (patients.length >= 5) {
             // Notify client that slot is unavailable
-            socket.emit("slotUnavailable", { message: "Slot is full" });
+            console.log("Patient length is greater than 5");
+
+            socket
+              .to(data.doctorId + "")
+              .emit("slotUnavailable", { message: "Slot is full" });
             return;
           }
+          console.log("Emiting patient count to frontend");
 
           // Notify doctor of new patient count
-          io.to(data.doctorId).emit("patientCountUpdate", {
+          socket.to(data.doctorId + "").emit("patientCountUpdate", {
             count: patients.length,
           });
         } catch (error) {

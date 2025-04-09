@@ -28,9 +28,6 @@ class ContactDetailsRepository {
     const isContactPresent = contactDetails.find(
       (contact: any) => contactId === contact.id
     );
-    console.log(isContactPresent);
-
-    console.log(contactId);
 
     if (!isContactPresent) {
       throw new Error("contact not found with this id");

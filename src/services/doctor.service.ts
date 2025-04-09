@@ -1,14 +1,22 @@
 import doctorRepository from "../repository/doctor.repository";
 import jwt from "jsonwebtoken";
-const secret_key = "sbdasbduasbcsacbbjhbiu";
+const secret_key = "abcdefghijklmnopqrstuvwxyz";
 
 class DoctorService {
-  async createDoctor(name: string, speciality: string) {
-    return await doctorRepository.createDoctor(name, speciality);
-  }
+  // async createDoctor(name: string, speciality: string) {
+  //   return await doctorRepository.createDoctor(name, speciality);
+  // }
 
   async getAllAppointments(id: number) {
     return await doctorRepository.getAllAppointments(id);
+  }
+
+  async getDoctor(id: number) {
+    return await doctorRepository.getDoctor(id);
+  }
+
+  async updatePassword(id: number, password: string) {
+    return await doctorRepository.updatePassword(id, password);
   }
 
   async logInDoctor(email: string, password: string) {
@@ -28,6 +36,9 @@ class DoctorService {
     return { doctor, token };
   }
 
+  async getDoctorByEmail(email: string) {
+    return await doctorRepository.getDoctorByEmail(email);
+  }
   async getAllDoctor() {
     return await doctorRepository.getAllDoctors();
   }

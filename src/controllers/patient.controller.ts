@@ -136,7 +136,10 @@ class PatientController {
   async getPatientById(req: Request, res: Response) {
     try {
       const id = req.params.id;
+
       const result = await patientService.getPatientById(+id);
+      // console.log(result);
+
       if (!result) {
         res.status(404).json({
           message: "Patient not found with this id",

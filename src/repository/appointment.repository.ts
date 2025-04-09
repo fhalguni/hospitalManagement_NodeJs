@@ -32,7 +32,7 @@ class AppointmentRepository {
     const appointment = await this.appointmentRepository
       .createQueryBuilder()
       .insert()
-      .into("table_of_appointment2")
+      .into("table_of_appointment5")
       .values({
         day: date, // Explicitly include the 'day' field
         timeSlot: timeSlot,
@@ -47,7 +47,6 @@ class AppointmentRepository {
       where: { id: appointment.identifiers[0].id },
       relations: ["doctor"], // Include the doctor entity
     });
-    console.log(savedAppointment);
 
     // Notify the doctor about the updated patient count
     const patients = await this.getpatientAppointmentsBySlots(

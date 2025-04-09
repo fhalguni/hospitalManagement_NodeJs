@@ -2,17 +2,23 @@ import { Request, Response } from "express";
 import adminService from "../services/admin.service";
 
 class AdminController {
-  async createAdmin(req: Request, res: Response) {
+  async createDoctor(req: Request, res: Response) {
     try {
-      const { name, speciality, email } = req.body;
-      const result = await adminService.createAdmin(name, speciality, email);
+      const { name, speciality, email, gender, degree } = req.body;
+      const result = await adminService.createDoctor(
+        name,
+        speciality,
+        email,
+        gender,
+        degree
+      );
       if (!result) {
         res.status(401).json({
           message: "No doctor created",
         });
       }
       res.status(200).json({
-        message: "success",
+        message: "Email send successfully",
         data: result,
       });
     } catch (error) {
@@ -127,6 +133,68 @@ class AdminController {
 
       const result = await adminService.getAllAppointmentOfDoctor(+id);
 
+      if (!result) {
+        res.status(404).json({
+          message: "No doctor found with this id",
+        });
+      }
+      res.status(200).json({
+        message: "success",
+        data: result,
+      });
+    } catch (error) {
+      res.status(404).json({
+        err: (error as Error).message,
+      });
+    }
+  }
+
+  async activePatient(req: Request, res: Response) {
+    try {
+      const id = req.params.id;
+      const result = await adminService.activePatient(+id);
+      if (!result) {
+        res.status(404).json({
+          message: "No id found with this id",
+        });
+      }
+      res.status(200).json({
+        message: "sucess",
+        data: result,
+      });
+    } catch (error) {
+      res.status(404).json({
+        err: (error as Error).message,
+      });
+    }
+  }
+
+  async getPatient(req: Request, res: Response) {
+    try {
+      const id = req.params.id;
+      console.log(id);
+
+      const result = await adminService.getPatient(+id);
+      if (!result) {
+        res.status(404).json({
+          message: "No patient with this id",
+        });
+      }
+      res.status(200).json({
+        message: "success",
+        data: result,
+      });
+    } catch (error) {
+      res.status(404).json({
+        err: (error as Error).message,
+      });
+    }
+  }
+
+  async activeAdmin(req: Request, res: Response) {
+    try {
+      const id = req.params.id;
+      const result = await adminService.activeDoctor(+id);
       if (!result) {
         res.status(404).json({
           message: "No doctor found with this id",

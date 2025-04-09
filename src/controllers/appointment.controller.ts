@@ -4,10 +4,10 @@ import appointmentService from "../services/appointment.service";
 class AppointmentController {
   async bookAppointment(req: Request, res: Response) {
     try {
-      console.log(req.body);
-
       const patientId = req.params.id;
+
       const { doctorId, day, timeSlot } = req.body;
+
       const result = await appointmentService.bookAppointment(
         +patientId,
         doctorId,

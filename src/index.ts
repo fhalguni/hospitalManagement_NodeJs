@@ -1,4 +1,9 @@
-import express from "express";
+import express, {
+  ErrorRequestHandler,
+  NextFunction,
+  Request,
+  Response,
+} from "express";
 import { AppDataSourse } from "./config/database.config";
 import { patientRouter } from "./routes/patient.routes";
 import { ContactRouter } from "./routes/contactDetail.routes";
@@ -10,6 +15,10 @@ import http from "http";
 import { Server } from "socket.io";
 import { configureSocket } from "./socket/socket.handler";
 import { adminRouter } from "./routes/admin.routes";
+
+// import { errorMiddleware } from "./middleware/auth.middleware";
+// import { errorMiddleware } from "./middleware/auth.middleware";
+// import { errorMiddleware } from "./middleware/auth.middleware";
 const app = express();
 app.use(express.json());
 
@@ -30,6 +39,11 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: "*" },
 });
+app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log(`incoming request:${req.method} ${req.originalUrl}`);
+  next();
+});
+// app.use(errorMiddleware);
 
 configureSocket(io);
 app.use("/patient", patientRouter);

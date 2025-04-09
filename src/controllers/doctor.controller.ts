@@ -2,30 +2,31 @@ import { Request, Response } from "express";
 import doctorService from "../services/doctor.service";
 
 class DoctorController {
-  async createDoctor(req: Request, res: Response) {
-    try {
-      const { name, speciality } = req.body;
-      const result = await doctorService.createDoctor(name, speciality);
-      if (!result) {
-        res.status(401).json({
-          message: "Doctor not created",
-        });
-      }
-      res.status(200).json({
-        message: "Doctor created",
-        data: result,
-      });
-    } catch (err) {
-      res.status(401).json({
-        error: (err as Error).message,
-      });
-    }
-  }
+  // async createDoctor(req: Request, res: Response) {
+  //   try {
+  //     const { name, speciality } = req.body;
+  //     const result = await doctorService.createDoctor(name, speciality);
+  //     if (!result) {
+  //       res.status(401).json({
+  //         message: "Doctor not created",
+  //       });
+  //     }
+  //     res.status(200).json({
+  //       message: "Doctor created",
+  //       data: result,
+  //     });
+  //   } catch (err) {
+  //     res.status(401).json({
+  //       error: (err as Error).message,
+  //     });
+  //   }
+  // }
 
   async getAllAppointments(req: Request, res: Response) {
     try {
       const id = req.params.id;
       const result = await doctorService.getAllAppointments(+id);
+
       if (!result) {
         res.status(404).json({
           message: "No appointment found with this id",
@@ -118,6 +119,49 @@ class DoctorController {
       }
       res.status(200).json({
         message: "Appointment deleted successfully",
+        data: result,
+      });
+    } catch (error) {
+      res.status(404).json({
+        err: (error as Error).message,
+      });
+    }
+  }
+
+  async getDoctor(req: Request, res: Response) {
+    try {
+      const id = req.params.id;
+      const result = await doctorService.getDoctor(+id);
+      if (!result) {
+        res.status(404).json({
+          message: "No doctor found with this id",
+        });
+      }
+      res.status(200).json({
+        message: "success",
+        data: result,
+      });
+    } catch (error) {
+      res.status(404).json({
+        err: (error as Error).message,
+      });
+    }
+  }
+
+  async updatePassword(req: Request, res: Response) {
+    try {
+      const id = req.params.id;
+      const { password } = req.body;
+     
+
+      const result = await doctorService.updatePassword(+id, password);
+      if (!result) {
+        res.status(404).json({
+          message: "No doctor found with this id",
+        });
+      }
+      res.status(200).json({
+        message: "success",
         data: result,
       });
     } catch (error) {

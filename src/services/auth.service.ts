@@ -54,8 +54,69 @@ class AuthService {
     return { user, token };
   }
 
+  async logIn(email: string, password: string) {
+    const doctor = await authRepository.getDoctorByEmail(email);
+
+    const patient = await authRepository.getPatientByEmail(email);
+    if (doctor) {
+      if (doctor.isActive === false) {
+        throw new Error("You are no longer exist");
+      }
+
+      if (password != doctor.password) throw new Error("Invalid Credentials");
+      const role = "doctor";
+      const token = jwt.sign(
+        { id: doctor.id, email: doctor.email },
+        secret_key,
+        {
+          expiresIn: "1hr",
+        }
+      );
+
+      return { user: doctor, token, role };
+    } else if (patient) {
+      if (patient.isActive === false) {
+        throw new Error("You are no longer exist");
+      }
+
+      const isValidUser = await bcrypt.compare(password, patient.password);
+
+      if (!isValidUser) throw new Error("Invalid Credentials");
+      const role = "patient";
+      const token = jwt.sign(
+        { id: patient.id, email: patient.email },
+        secret_key,
+        {
+          expiresIn: "1hr",
+        }
+      );
+
+      return { user: patient, token, role };
+    } else if (email === "admin123@gmail.com" && password === "admin1234") {
+      const admin = { email: "admin123@gmail.com", password: "admin1234" };
+      const role = "admin";
+      const token = jwt.sign({ email: email }, secret_key, {
+        expiresIn: "1hr",
+      });
+      return { user: admin, token, role };
+    } else {
+      throw new Error("Invalid Credentials");
+    }
+  }
   async getUserByEmail(email: string) {
     return await authRepository.getPatientByEmail(email);
+  }
+
+  async changePassword(id: number, password: string, confirmPassword: string) {
+    if (password != confirmPassword) {
+      throw new Error("Password not matched");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    return await this.patientRepository.update(id, {
+      password: hashedPassword,
+      confirmPassword,
+    });
   }
 }
 export default new AuthService();

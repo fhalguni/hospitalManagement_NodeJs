@@ -27,12 +27,6 @@ class PatientService {
     patientId: number,
     data: { doctorId: number; day: Date; timeSlot: string }
   ) {
-    console.log({
-      id,
-      patientId,
-      data,
-    });
-
     return await patientRepository.rescheduleAppointment(id, patientId, data);
   }
 
@@ -45,7 +39,10 @@ class PatientService {
   }
 
   async getPatientById(id: number) {
-    return await patientRepository.getPatientById(id);
+    console.log(id);
+
+    const patient = await patientRepository.getPatientById(id);
+    return patient;
   }
 }
 

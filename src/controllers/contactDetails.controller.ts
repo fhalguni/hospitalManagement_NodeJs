@@ -46,13 +46,11 @@ class ContactDetailController {
     try {
       const id = req.params.id;
       const { contactId } = req.body;
-      console.log(contactId);
 
       const result = await contactDetailService.deleteContactDetails(
         +id,
         contactId
       );
-      console.log(result);
 
       if (!result) {
         res.status(404).json({

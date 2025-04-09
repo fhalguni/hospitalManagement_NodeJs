@@ -38,8 +38,6 @@ class PatientRepo {
     const isAppointmentPresent = appointment.find(
       (appointments) => appointments.id === appointmentId
     );
-    console.log("aaa", isAppointmentPresent);
-    console.log(appointmentId);
 
     if (!isAppointmentPresent) {
       throw new Error("No appointment found with this id");
@@ -57,11 +55,13 @@ class PatientRepo {
     return result;
   }
 
-  getPatientById(id: number) {
-    return this.patientRepository.findOne({
+  async getPatientById(id: number) {
+    const patient = await this.patientRepository.findOne({
       where: { id: id },
       relations: ["contactDetails"],
     });
+    console.log("patient:", patient);
+    return patient;
   }
 
   async getAllAppointment(patientId: number) {

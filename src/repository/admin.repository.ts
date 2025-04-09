@@ -7,7 +7,13 @@ class AdminRepo {
   doctorRepository = AppDataSourse.getRepository(Doctor);
   patientRepository = AppDataSourse.getRepository(Patient);
   appointmentRepository = AppDataSourse.getRepository(Appointment);
-  async createDoctor(name: string, speciality: string, email: string) {
+  async createDoctor(
+    name: string,
+    speciality: string,
+    email: string,
+    gender: string,
+    degree: string
+  ) {
     const password = email.split("@")[0] + Math.random().toString(36).slice(-6);
     const isActive = true;
     const newDoctor = this.doctorRepository.create({
@@ -16,6 +22,8 @@ class AdminRepo {
       email,
       password,
       isActive,
+      gender,
+      degree,
     });
     return await this.doctorRepository.save(newDoctor);
   }
@@ -49,6 +57,22 @@ class AdminRepo {
     return await this.doctorRepository.update(id, {
       isActive: false,
     });
+  }
+
+  async activePatient(id: number) {
+    return await this.patientRepository.update(id, { isActive: true });
+  }
+
+  async getPatient(id: number) {
+    return await this.patientRepository.find({
+      where: {
+        id: id,
+      },
+    });
+  }
+
+  async activeDoctor(id: number) {
+    return await this.doctorRepository.update(id, { isActive: true });
   }
 }
 
